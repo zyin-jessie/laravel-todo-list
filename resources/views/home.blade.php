@@ -40,7 +40,7 @@
 
         <div class="tab-content mt-3">
             <div class="tab-pane fade show active" id="all">
-                <form action="{{ route('task.store') }}" method="POST" novalidate class="mb-5">
+                <form action="{{ route('tasks.store') }}" method="POST" novalidate class="mb-5">
                     @csrf
                     <div class="mb-2">
                         <input type="text" name="name" placeholder="Task Name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror">
