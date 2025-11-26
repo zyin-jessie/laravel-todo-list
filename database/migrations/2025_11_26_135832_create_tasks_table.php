@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('priority', ['low', 'medium', 'high'])->default('high');
+            $table->enum('priority', ['Low', 'Medium', 'High'])->default('High');
             $table->date('deadline');
             $table->timestamp('completed_at')->nullable();
             $table->softDeletes();

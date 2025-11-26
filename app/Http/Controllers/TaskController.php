@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Task;
 
 class TaskController extends Controller
 {
@@ -19,7 +20,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('home');
     }
 
     /**
@@ -27,7 +28,13 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'priority'  => 'required|in:High,Medium,Low',
+            'deadline'  => 'required|date|after:today',
+        ]);
+        Task::create($validated);
+        return back()->with('success', 'Task added successfully!');
     }
 
     /**

@@ -7,6 +7,7 @@
     <title>Home</title>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
@@ -31,24 +32,186 @@
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#completed">Completed</button>
             </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manage-task">Manage Task</button>
+            </li>
         </ul>
 
 
         <div class="tab-content mt-3">
             <div class="tab-pane fade show active" id="all">
-                <ul id="completedTasks" class="list-group"></ul>
+                <form action="{{ route('task.store') }}" method="POST" novalidate class="mb-5">
+                    @csrf
+                    <div class="mb-2">
+                        <input type="text" name="name" placeholder="Task Name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror">
+                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-floating">
+                            <select class="form-select @error('priority') is-invalid @enderror" name="priority" id="priority">
+                                <option disabled {{ old('priority') ? '' : 'selected' }}>-- Select Priority --</option>
+                                <option value="High" {{ old('priority') == 'High' ? 'selected' : '' }}>High</option>
+                                <option value="Medium" {{ old('priority') == 'Medium' ? 'selected' : '' }}>Medium</option>
+                                <option value="Low" {{ old('priority') == 'Low' ? 'selected' : '' }}>Low</option>
+                            </select>
+                            <label for="floatingSelectProgram">Priority</label>
+                            @error('priority')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div>
+                        <input type="date" name="deadline" id="date" value="{{ old('deadline') }}" class="form-control @error('deadline') is-invalid @enderror" />
+                        @error('deadline')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <button class="btn btn-primary mt-2 ms-auto d-block">Add Task</button>
+                </form>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Task Name</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Prepare presentation slides</td>
+                            <td>Medium</td>
+                            <td>2025-12-05</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="tab-pane fade" id="pending">
-                <ul id="completedTasks" class="list-group"></ul>
+                <div class="input-group mb-4">
+                    <input id="taskInput" type="text" class="form-control" placeholder="Filter task...">
+                    <button id="addTaskBtn" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
+                            <path d="m21 21-4.34-4.34"/>
+                            <circle cx="11" cy="11" r="8"/>
+                        </svg>
+                    </button>
+                </div>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Task Name</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Prepare presentation slides</td>
+                            <td>Medium</td>
+                            <td>2025-12-05</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="tab-pane fade" id="completed">
-                <ul id="completedTasks" class="list-group"></ul>
+                <div class="input-group mb-4">
+                    <input id="taskInput" type="text" class="form-control" placeholder="Filter task...">
+                    <button id="addTaskBtn" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
+                            <path d="m21 21-4.34-4.34"/>
+                            <circle cx="11" cy="11" r="8"/>
+                        </svg>
+                    </button>
+                </div>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Task Name</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                            <th>Completed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Prepare presentation slides</td>
+                            <td>Medium</td>
+                            <td>2025-12-05</td>
+                            <td>2025-12-04</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="manage-task">
+                <div class="input-group mb-4">
+                    <input id="taskInput" type="text" class="form-control" placeholder="Filter task...">
+                    <button id="addTaskBtn" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
+                            <path d="m21 21-4.34-4.34"/>
+                            <circle cx="11" cy="11" r="8"/>
+                        </svg>
+                    </button>
+                </div>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Task Name</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Prepare presentation slides</td>
+                            <td>Medium</td>
+                            <td>2025-12-05</td>
+                            <td>
+                                <button class="btn btn-sm btn-success">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen">
+                                        <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn btn-sm btn-danger">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2">
+                                        <path d="M10 11v6"/>
+                                        <path d="M14 11v6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                        <path d="M3 6h18"/>
+                                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 
+    <script src="{{ asset('js/home.js') }}"></script>
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#2563eb',
+                allowOutsideClick: false,
+                backdrop: true,
+                heightAuto: false
+            });
+        @endif
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 </body>
 </html>
