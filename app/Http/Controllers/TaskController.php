@@ -69,14 +69,17 @@ class TaskController extends Controller
 
         return back()
         ->with('success', 'Task updated successfully!')
-        ->with('activeTab', 'manage-task');;
+        ->with('activeTab', 'manage-task');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Task $task)
     {
-        //
+        $task->delete();
+        return back()
+        ->with('success', 'Task deleted successfully!')
+        ->with('activeTab', 'manage-task');
     }
 }
