@@ -57,9 +57,19 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Task $task)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'priority' => 'required|in:High,Medium,Low',
+            'deadline' => 'required|date|after:today',
+        ]);
+
+        $task->update($validated);
+
+        return back()
+        ->with('success', 'Task updated successfully!')
+        ->with('activeTab', 'manage-task');;
     }
 
     /**
