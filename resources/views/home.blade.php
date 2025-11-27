@@ -35,6 +35,9 @@
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manage-task">Manage Task</button>
             </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#trash">Trash</button>
+            </li>
         </ul>
 
         <!-- Home -->
@@ -181,7 +184,7 @@
                                 <td>{{ $task->priority }}</td>
                                 <td>{{ $task->deadline->format('Y-m-d') }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-success"
+                                    <button class="btn btn-sm btn-secondary"
                                         data-bs-toggle="modal"
                                         data-bs-target="#editTaskModal"
                                         data-id="{{ $task->id }}"
@@ -195,6 +198,65 @@
                                         </svg>
                                     </button>
                                     <form action="{{ route('tasks.destroy', $task->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2">
+                                                <path d="M10 11v6"/>
+                                                <path d="M14 11v6"/>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                                                <path d="M3 6h18"/>
+                                                <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Trash -->
+            <div class="tab-pane fade" id="trash">
+                <div class="input-group mb-4">
+                    <input id="taskInput" type="text" class="form-control" placeholder="Filter task...">
+                    <button id="addTaskBtn" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
+                            <path d="m21 21-4.34-4.34"/>
+                            <circle cx="11" cy="11" r="8"/>
+                        </svg>
+                    </button>
+                </div>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Task Name</th>
+                            <th>Priority</th>
+                            <th>Deadline</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($trashedTasks as $task)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $task->name }}</td>
+                                <td>{{ $task->priority }}</td>
+                                <td>{{ $task->deadline->format('Y-m-d') }}</td>
+                                <td>
+                                    <form action="{{ route('tasks.restore', $task->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        <button class="btn btn-sm btn-secondary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-cw-icon lucide-rotate-cw">
+                                                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+                                                <path d="M21 3v5h-5"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('tasks.forceDelete', $task->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button class="btn btn-sm btn-danger">

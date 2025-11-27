@@ -13,7 +13,8 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::all();
-        return view('home', compact('tasks'));
+        $trashedTasks = Task::onlyTrashed()->get();
+        return view('home', compact('tasks', 'trashedTasks'));
     }
 
     /**
@@ -36,6 +37,16 @@ class TaskController extends Controller
         ]);
         Task::create($validated);
         return back()->with('success', 'Task added successfully!');
+    }
+
+    public function restore($id)
+    {
+        $task = Task::onlyTrashed()->findOrFail($id);
+        $task->restore();
+
+        return back()
+        ->with('success', 'Task restored successfully!')
+        ->with('activeTab', 'trash');
     }
 
     /**
@@ -71,7 +82,6 @@ class TaskController extends Controller
         ->with('success', 'Task updated successfully!')
         ->with('activeTab', 'manage-task');
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -81,5 +91,14 @@ class TaskController extends Controller
         return back()
         ->with('success', 'Task deleted successfully!')
         ->with('activeTab', 'manage-task');
+    }
+    public function forceDelete($id)
+    {
+        $task = Task::onlyTrashed()->findOrFail($id);
+        $task->forceDelete();
+
+        return back()
+        ->with('success', 'Task permanently deleted!')
+        ->with('activeTab', 'trash');
     }
 }
