@@ -12,9 +12,12 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        // $tasks = Task::whereNull('deleted_at')->whereNull('completed_at')->get();
+        $manageTask = Task::all();
+        $tasks = Task::whereNull('completed_at')->get();
         $trashedTasks = Task::onlyTrashed()->get();
-        return view('home', compact('tasks', 'trashedTasks'));
+        $completedTasks = Task::whereNotNull('completed_at')->get();
+        return view('home', compact('tasks', 'manageTask', 'trashedTasks', 'completedTasks'));
     }
 
     /**
@@ -64,7 +67,18 @@ class TaskController extends Controller
     {
         //
     }
+    public function complete($id)
+    {
+        $task = Task::findOrFail($id);
 
+        $task->update([
+            'completed_at' => now()
+        ]);
+
+        return back()
+        ->with('success', 'Task marked as completed!')
+        ->with('activeTab', 'pending');
+    }
     /**
      * Update the specified resource in storage.
      */

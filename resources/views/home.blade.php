@@ -107,6 +107,7 @@
                             <th>Task Name</th>
                             <th>Priority</th>
                             <th>Deadline</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,6 +117,15 @@
                                 <td>{{ $task->name }}</td>
                                 <td>{{ $task->priority }}</td>
                                 <td>{{ $task->deadline->format('Y-m-d') }}</td>
+                                <td>
+                                    <form action="{{ route('tasks.complete', $task->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button class="btn btn-sm btn-success">
+                                            DONE
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -144,13 +154,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Prepare presentation slides</td>
-                            <td>Medium</td>
-                            <td>2025-12-05</td>
-                            <td>2025-12-04</td>
-                        </tr>
+                        @foreach ($completedTasks as $task)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $task->name }}</td>
+                                <td>{{ $task->priority }}</td>
+                                <td>{{ $task->deadline->format('Y-m-d') }}</td>
+                                <td>{{ $task->completed_at->format('Y-m-d') }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -173,16 +185,18 @@
                             <th>Task Name</th>
                             <th>Priority</th>
                             <th>Deadline</th>
+                            <th>Completed</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($tasks as $task)
+                        @foreach ($manageTask as $task)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $task->name }}</td>
                                 <td>{{ $task->priority }}</td>
                                 <td>{{ $task->deadline->format('Y-m-d') }}</td>
+                                <td>{{ $task->completed_at ? $task->completed_at->format('Y-m-d') : 'No' }}</td>
                                 <td>
                                     <button class="btn btn-sm btn-secondary"
                                         data-bs-toggle="modal"
