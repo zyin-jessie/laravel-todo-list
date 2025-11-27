@@ -43,6 +43,39 @@
         <!-- Home -->
         <div class="tab-content mt-3">
             <div class="tab-pane fade show active" id="home">
+                <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Tasks</h5>
+                                <p class="card-text h2">{{ $totalTasks }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Pending Tasks</h5>
+                                <p class="card-text h2">{{ $totalPendingTasks }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">Completed Tasks</h5>
+                                <p class="card-text h2">{{ $totalCompletedTasks }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="text-primary"><strong>Top 5 Urgent Tasks</strong></h3>
+                    <p class="text-muted">Here are the most critical tasks that need your attention.</p>
+                </div>
                 <table class="table table-striped table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
@@ -53,12 +86,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Prepare presentation slides</td>
-                            <td>Medium</td>
-                            <td>2025-12-05</td>
-                        </tr>
+                        @foreach ($topTasks as $task)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $task->name }}</td>
+                                <td>{{ $task->priority }}</td>
+                                <td>{{ $task->deadline->format('Y-m-d') }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

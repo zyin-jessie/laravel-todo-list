@@ -12,12 +12,26 @@ class TaskController extends Controller
      */
     public function index()
     {
-        // $tasks = Task::whereNull('deleted_at')->whereNull('completed_at')->get();
+        $totalTasks = Task::count();
+        $totalPendingTasks = Task::whereNull('completed_at')->count();
+        $totalCompletedTasks = Task::whereNotNull('completed_at')->count();
+
+        $topTasks = Task::whereNull('completed_at')->orderBy('priority', 'desc')->take(5)->get();
+
         $manageTask = Task::all();
         $tasks = Task::whereNull('completed_at')->get();
         $trashedTasks = Task::onlyTrashed()->get();
         $completedTasks = Task::whereNotNull('completed_at')->get();
-        return view('home', compact('tasks', 'manageTask', 'trashedTasks', 'completedTasks'));
+        return view('home', compact(
+            'tasks',
+            'manageTask',
+            'trashedTasks',
+            'completedTasks',
+            'totalTasks',
+            'totalPendingTasks',
+            'totalCompletedTasks',
+            'topTasks'
+        ));
     }
 
     /**
@@ -40,7 +54,7 @@ class TaskController extends Controller
         ]);
 
         Task::create($validated);
-        
+
         return back()
         ->with('success', 'Task added successfully!')
         ->with('activeTab', 'manage-task');
