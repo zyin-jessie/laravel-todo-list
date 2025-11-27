@@ -38,8 +38,12 @@ class TaskController extends Controller
             'priority'  => 'required|in:High,Medium,Low',
             'deadline'  => 'required|date|after:today',
         ]);
+
         Task::create($validated);
-        return back()->with('success', 'Task added successfully!');
+        
+        return back()
+        ->with('success', 'Task added successfully!')
+        ->with('activeTab', 'manage-task');
     }
 
     public function restore($id)

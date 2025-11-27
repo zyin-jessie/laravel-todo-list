@@ -24,7 +24,7 @@
 
         <ul class="nav nav-tabs" id="todoTabs">
             <li class="nav-item">
-                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#all">Home</button>
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#home">Home</button>
             </li>
             <li class="nav-item">
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#pending">Pending</button>
@@ -42,33 +42,7 @@
 
         <!-- Home -->
         <div class="tab-content mt-3">
-            <div class="tab-pane fade show active" id="all">
-                <form action="{{ route('tasks.store') }}" method="POST" novalidate class="mb-5">
-                    @csrf
-                    <div class="mb-2">
-                        <input type="text" name="name" placeholder="Task Name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror">
-                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                    <div class="mb-2">
-                        <div class="form-floating">
-                            <select class="form-select @error('priority') is-invalid @enderror" name="priority" id="priority">
-                                <option disabled {{ old('priority') ? '' : 'selected' }}>-- Select Priority --</option>
-                                <option value="High" {{ old('priority') == 'High' ? 'selected' : '' }}>High</option>
-                                <option value="Medium" {{ old('priority') == 'Medium' ? 'selected' : '' }}>Medium</option>
-                                <option value="Low" {{ old('priority') == 'Low' ? 'selected' : '' }}>Low</option>
-                            </select>
-                            <label for="floatingSelectProgram">Priority</label>
-                            @error('priority')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-                    <div>
-                        <input type="date" name="deadline" id="date" value="{{ old('deadline') }}" class="form-control @error('deadline') is-invalid @enderror" />
-                        @error('deadline')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                    </div>
-                    <button class="btn btn-primary mt-2 ms-auto d-block">Add Task</button>
-                </form>
+            <div class="tab-pane fade show active" id="home">
                 <table class="table table-striped table-bordered table-hover">
                     <thead class="table-dark">
                         <tr>
@@ -169,6 +143,32 @@
 
             <!-- Manage Task -->
             <div class="tab-pane fade" id="manage-task">
+                <form action="{{ route('tasks.store') }}" method="POST" novalidate class="mb-5">
+                    @csrf
+                    <div class="mb-2">
+                        <input type="text" name="name" placeholder="Task Name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror">
+                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="mb-2">
+                        <div class="form-floating">
+                            <select class="form-select @error('priority') is-invalid @enderror" name="priority" id="priority">
+                                <option disabled {{ old('priority') ? '' : 'selected' }}>-- Select Priority --</option>
+                                <option value="High" {{ old('priority') == 'High' ? 'selected' : '' }}>High</option>
+                                <option value="Medium" {{ old('priority') == 'Medium' ? 'selected' : '' }}>Medium</option>
+                                <option value="Low" {{ old('priority') == 'Low' ? 'selected' : '' }}>Low</option>
+                            </select>
+                            <label for="floatingSelectProgram">Priority</label>
+                            @error('priority')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div>
+                        <input type="date" name="deadline" id="date" value="{{ old('deadline') }}" class="form-control @error('deadline') is-invalid @enderror" />
+                        @error('deadline')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <button class="btn btn-primary mt-2 ms-auto d-block">Add Task</button>
+                </form>
                 <div class="input-group mb-4">
                     <input id="taskInput" type="text" class="form-control" placeholder="Filter task...">
                     <button id="addTaskBtn" class="btn btn-primary">
@@ -336,11 +336,17 @@
                 heightAuto: false
             });
         @endif
-        @if(session('activeTab'))
-            let tabTrigger = document.querySelector(`button[data-bs-target="#{{ session('activeTab') }}"]`);
-            let tab = new bootstrap.Tab(tabTrigger);
-            tab.show();
-        @endif
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('activeTab'))
+                let tabTrigger = document.querySelector(`button[data-bs-target="#{{ session('activeTab') }}"]`);
+                let tab = new bootstrap.Tab(tabTrigger);
+                tab.show();
+            @elseif($errors->any())
+                let tabTrigger = document.querySelector(`button[data-bs-target="#manage-task"]`);
+                let tab = new bootstrap.Tab(tabTrigger);
+                tab.show();
+            @endif
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 </body>
