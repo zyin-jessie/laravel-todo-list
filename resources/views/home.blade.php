@@ -37,7 +37,7 @@
             </li>
         </ul>
 
-
+        <!-- Home -->
         <div class="tab-content mt-3">
             <div class="tab-pane fade show active" id="all">
                 <form action="{{ route('tasks.store') }}" method="POST" novalidate class="mb-5">
@@ -86,6 +86,7 @@
                 </table>
             </div>
 
+            <!-- Pending -->
             <div class="tab-pane fade" id="pending">
                 <div class="input-group mb-4">
                     <input id="taskInput" type="text" class="form-control" placeholder="Filter task...">
@@ -106,12 +107,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Prepare presentation slides</td>
-                            <td>Medium</td>
-                            <td>2025-12-05</td>
-                        </tr>
+                        @foreach ($tasks as $task)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $task->name }}</td>
+                                <td>{{ $task->priority }}</td>
+                                <td>{{ $task->deadline->format('Y-m-d') }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
